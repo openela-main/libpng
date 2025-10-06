@@ -1,0 +1,12 @@
+diff -up libpng-1.6.40/pngrutil.c.fix_sast libpng-1.6.40/pngrutil.c
+--- libpng-1.6.40/pngrutil.c.fix_sast	2024-08-06 15:35:51.789156138 +0200
++++ libpng-1.6.40/pngrutil.c	2024-08-06 15:35:51.816156415 +0200
+@@ -1815,7 +1815,7 @@ png_handle_sPLT(png_structrp png_ptr, pn
+ void /* PRIVATE */
+ png_handle_tRNS(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+ {
+-   png_byte readbuf[PNG_MAX_PALETTE_LENGTH];
++   png_byte readbuf[PNG_MAX_PALETTE_LENGTH] = {0};
+ 
+    png_debug(1, "in png_handle_tRNS");
+ 

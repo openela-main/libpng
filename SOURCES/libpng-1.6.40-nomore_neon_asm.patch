@@ -1,0 +1,200 @@
+diff -up libpng-1.6.40/CMakeLists.txt.arm libpng-1.6.40/CMakeLists.txt
+--- libpng-1.6.40/CMakeLists.txt.arm	2024-08-08 08:31:00.902590808 +0200
++++ libpng-1.6.40/CMakeLists.txt	2024-08-08 08:34:50.295999649 +0200
+@@ -126,7 +126,6 @@ if(TARGET_ARCH MATCHES "^arm" OR
+   elseif(NOT ${PNG_ARM_NEON} STREQUAL "off")
+     set(libpng_arm_sources
+         arm/arm_init.c
+-        arm/filter_neon.S
+         arm/filter_neon_intrinsics.c
+         arm/palette_neon_intrinsics.c)
+     if(${PNG_ARM_NEON} STREQUAL "on")
+diff -up libpng-1.6.40/Makefile.am.arm libpng-1.6.40/Makefile.am
+--- libpng-1.6.40/Makefile.am.arm	2023-06-21 21:06:40.000000000 +0200
++++ libpng-1.6.40/Makefile.am	2024-08-08 08:31:00.903590819 +0200
+@@ -94,7 +94,7 @@ libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SO
+ 
+ if PNG_ARM_NEON
+ libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES += arm/arm_init.c\
+-	arm/filter_neon.S arm/filter_neon_intrinsics.c \
++	arm/filter_neon_intrinsics.c \
+ 	arm/palette_neon_intrinsics.c
+ endif
+ 
+diff -up libpng-1.6.40/Makefile.in.arm libpng-1.6.40/Makefile.in
+--- libpng-1.6.40/Makefile.in.arm	2023-06-21 21:06:40.000000000 +0200
++++ libpng-1.6.40/Makefile.in	2024-08-08 08:41:47.242186003 +0200
+@@ -106,7 +106,7 @@ check_PROGRAMS = pngtest$(EXEEXT) pngunk
+ @HAVE_CLOCK_GETTIME_TRUE@am__append_1 = timepng
+ bin_PROGRAMS = pngfix$(EXEEXT) png-fix-itxt$(EXEEXT)
+ @PNG_ARM_NEON_TRUE@am__append_2 = arm/arm_init.c\
+-@PNG_ARM_NEON_TRUE@	arm/filter_neon.S arm/filter_neon_intrinsics.c \
++@PNG_ARM_NEON_TRUE@	arm/filter_neon_intrinsics.c \
+ @PNG_ARM_NEON_TRUE@	arm/palette_neon_intrinsics.c
+ 
+ @PNG_MIPS_MSA_TRUE@am__append_3 = mips/mips_init.c\
+@@ -183,13 +183,13 @@ am__libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_l
+ 	pngrtran.c pngrutil.c pngset.c pngtrans.c pngwio.c pngwrite.c \
+ 	pngwtran.c pngwutil.c png.h pngconf.h pngdebug.h pnginfo.h \
+ 	pngpriv.h pngstruct.h pngusr.dfa arm/arm_init.c \
+-	arm/filter_neon.S arm/filter_neon_intrinsics.c \
++	arm/filter_neon_intrinsics.c \
+ 	arm/palette_neon_intrinsics.c mips/mips_init.c \
+ 	mips/filter_msa_intrinsics.c intel/intel_init.c \
+ 	intel/filter_sse2_intrinsics.c powerpc/powerpc_init.c \
+ 	powerpc/filter_vsx_intrinsics.c
+ am__dirstamp = $(am__leading_dot)dirstamp
+-@PNG_ARM_NEON_TRUE@am__objects_1 = arm/arm_init.lo arm/filter_neon.lo \
++@PNG_ARM_NEON_TRUE@am__objects_1 = arm/arm_init.lo \
+ @PNG_ARM_NEON_TRUE@	arm/filter_neon_intrinsics.lo \
+ @PNG_ARM_NEON_TRUE@	arm/palette_neon_intrinsics.lo
+ @PNG_MIPS_MSA_TRUE@am__objects_2 = mips/mips_init.lo \
+@@ -267,7 +267,7 @@ am__depfiles_remade = ./$(DEPDIR)/png.Pl
+ 	./$(DEPDIR)/pngtest.Po ./$(DEPDIR)/pngtrans.Plo \
+ 	./$(DEPDIR)/pngwio.Plo ./$(DEPDIR)/pngwrite.Plo \
+ 	./$(DEPDIR)/pngwtran.Plo ./$(DEPDIR)/pngwutil.Plo \
+-	arm/$(DEPDIR)/arm_init.Plo arm/$(DEPDIR)/filter_neon.Plo \
++	arm/$(DEPDIR)/arm_init.Plo \
+ 	arm/$(DEPDIR)/filter_neon_intrinsics.Plo \
+ 	arm/$(DEPDIR)/palette_neon_intrinsics.Plo \
+ 	contrib/libtests/$(DEPDIR)/pngimage.Po \
+@@ -285,16 +285,6 @@ am__depfiles_remade = ./$(DEPDIR)/png.Pl
+ 	powerpc/$(DEPDIR)/filter_vsx_intrinsics.Plo \
+ 	powerpc/$(DEPDIR)/powerpc_init.Plo
+ am__mv = mv -f
+-CPPASCOMPILE = $(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CCASFLAGS) $(CCASFLAGS)
+-LTCPPASCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+-	$(LIBTOOLFLAGS) --mode=compile $(CCAS) $(DEFS) \
+-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+-	$(AM_CCASFLAGS) $(CCASFLAGS)
+-AM_V_CPPAS = $(am__v_CPPAS_@AM_V@)
+-am__v_CPPAS_ = $(am__v_CPPAS_@AM_DEFAULT_V@)
+-am__v_CPPAS_0 = @echo "  CPPAS   " $@;
+-am__v_CPPAS_1 = 
+ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+ 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+ LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+@@ -823,7 +813,7 @@ all: $(BUILT_SOURCES) config.h
+ 	$(MAKE) $(AM_MAKEFLAGS) all-am
+ 
+ .SUFFIXES:
+-.SUFFIXES: .chk .out .S .c .lo .log .o .obj .test .test$(EXEEXT) .trs
++.SUFFIXES: .chk .out .c .lo .log .o .obj .test .test$(EXEEXT) .trs
+ am--refresh: Makefile
+ 	@:
+ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+@@ -976,7 +966,6 @@ arm/$(DEPDIR)/$(am__dirstamp):
+ 	@$(MKDIR_P) arm/$(DEPDIR)
+ 	@: > arm/$(DEPDIR)/$(am__dirstamp)
+ arm/arm_init.lo: arm/$(am__dirstamp) arm/$(DEPDIR)/$(am__dirstamp)
+-arm/filter_neon.lo: arm/$(am__dirstamp) arm/$(DEPDIR)/$(am__dirstamp)
+ arm/filter_neon_intrinsics.lo: arm/$(am__dirstamp) \
+ 	arm/$(DEPDIR)/$(am__dirstamp)
+ arm/palette_neon_intrinsics.lo: arm/$(am__dirstamp) \
+@@ -1147,7 +1136,6 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pngwtran.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pngwutil.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@arm/$(DEPDIR)/arm_init.Plo@am__quote@ # am--include-marker
+-@AMDEP_TRUE@@am__include@ @am__quote@arm/$(DEPDIR)/filter_neon.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@arm/$(DEPDIR)/filter_neon_intrinsics.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@arm/$(DEPDIR)/palette_neon_intrinsics.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@contrib/libtests/$(DEPDIR)/pngimage.Po@am__quote@ # am--include-marker
+@@ -1171,30 +1159,6 @@ $(am__depfiles_remade):
+ 
+ am--depfiles: $(am__depfiles_remade)
+ 
+-.S.o:
+-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+-@am__fastdepCCAS_TRUE@	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+-@am__fastdepCCAS_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CPPASCOMPILE) -c -o $@ $<
+-
+-.S.obj:
+-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+-@am__fastdepCCAS_TRUE@	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+-@am__fastdepCCAS_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CPPASCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+-
+-.S.lo:
+-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+-@am__fastdepCCAS_TRUE@	$(LTCPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+-@am__fastdepCCAS_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(LTCPPASCOMPILE) -c -o $@ $<
+-
+ .c.o:
+ @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+ @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@@ -2085,7 +2049,6 @@ distclean: distclean-am
+ 	-rm -f ./$(DEPDIR)/pngwtran.Plo
+ 	-rm -f ./$(DEPDIR)/pngwutil.Plo
+ 	-rm -f arm/$(DEPDIR)/arm_init.Plo
+-	-rm -f arm/$(DEPDIR)/filter_neon.Plo
+ 	-rm -f arm/$(DEPDIR)/filter_neon_intrinsics.Plo
+ 	-rm -f arm/$(DEPDIR)/palette_neon_intrinsics.Plo
+ 	-rm -f contrib/libtests/$(DEPDIR)/pngimage.Po
+@@ -2170,7 +2133,6 @@ maintainer-clean: maintainer-clean-am
+ 	-rm -f ./$(DEPDIR)/pngwtran.Plo
+ 	-rm -f ./$(DEPDIR)/pngwutil.Plo
+ 	-rm -f arm/$(DEPDIR)/arm_init.Plo
+-	-rm -f arm/$(DEPDIR)/filter_neon.Plo
+ 	-rm -f arm/$(DEPDIR)/filter_neon_intrinsics.Plo
+ 	-rm -f arm/$(DEPDIR)/palette_neon_intrinsics.Plo
+ 	-rm -f contrib/libtests/$(DEPDIR)/pngimage.Po
+diff -up libpng-1.6.40/pngpriv.h.arm libpng-1.6.40/pngpriv.h
+--- libpng-1.6.40/pngpriv.h.arm	2023-06-21 21:06:40.000000000 +0200
++++ libpng-1.6.40/pngpriv.h	2024-08-08 08:31:00.904590829 +0200
+@@ -140,47 +140,6 @@
+     * callbacks to do this.
+     */
+ #  define PNG_FILTER_OPTIMIZATIONS png_init_filter_functions_neon
+-
+-   /* By default the 'intrinsics' code in arm/filter_neon_intrinsics.c is used
+-    * if possible - if __ARM_NEON__ is set and the compiler version is not known
+-    * to be broken.  This is controlled by PNG_ARM_NEON_IMPLEMENTATION which can
+-    * be:
+-    *
+-    *    1  The intrinsics code (the default with __ARM_NEON__)
+-    *    2  The hand coded assembler (the default without __ARM_NEON__)
+-    *
+-    * It is possible to set PNG_ARM_NEON_IMPLEMENTATION in CPPFLAGS, however
+-    * this is *NOT* supported and may cease to work even after a minor revision
+-    * to libpng.  It *is* valid to do this for testing purposes, e.g. speed
+-    * testing or a new compiler, but the results should be communicated to the
+-    * libpng implementation list for incorporation in the next minor release.
+-    */
+-#  ifndef PNG_ARM_NEON_IMPLEMENTATION
+-#     if defined(__ARM_NEON__) || defined(__ARM_NEON)
+-#        if defined(__clang__)
+-            /* At present it is unknown by the libpng developers which versions
+-             * of clang support the intrinsics, however some or perhaps all
+-             * versions do not work with the assembler so this may be
+-             * irrelevant, so just use the default (do nothing here.)
+-             */
+-#        elif defined(__GNUC__)
+-            /* GCC 4.5.4 NEON support is known to be broken.  4.6.3 is known to
+-             * work, so if this *is* GCC, or G++, look for a version >4.5
+-             */
+-#           if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 6)
+-#              define PNG_ARM_NEON_IMPLEMENTATION 2
+-#           endif /* no GNUC support */
+-#        endif /* __GNUC__ */
+-#     else /* !defined __ARM_NEON__ */
+-         /* The 'intrinsics' code simply won't compile without this -mfpu=neon:
+-          */
+-#        if !defined(__aarch64__) && !defined(_M_ARM64)
+-            /* The assembler code currently does not work on ARM64 */
+-#          define PNG_ARM_NEON_IMPLEMENTATION 2
+-#        endif /* __aarch64__ */
+-#     endif /* __ARM_NEON__ */
+-#  endif /* !PNG_ARM_NEON_IMPLEMENTATION */
+-
+ #  ifndef PNG_ARM_NEON_IMPLEMENTATION
+       /* Use the intrinsics code by default. */
+ #     define PNG_ARM_NEON_IMPLEMENTATION 1
