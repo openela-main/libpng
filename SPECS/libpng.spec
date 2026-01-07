@@ -2,7 +2,7 @@ Summary:       A library of functions for manipulating PNG image format files
 Name:          libpng
 Epoch:         2
 Version:       1.6.34
-Release:       5%{?dist}
+Release:       9%{?dist}
 License:       zlib
 Group:         System Environment/Libraries
 URL:           http://www.libpng.org/pub/png/
@@ -15,7 +15,19 @@ Patch0:        libpng-multilib.patch
 Patch1:        libpng-fix-arm-neon.patch
 Patch2:        libpng-CVE-2018-13785.patch
 Patch3:        libpng-coverity.patch
-
+# from upstream, for <1.6.51, RHEL-131422
+# https://github.com/pnggroup/libpng/commit/08da33b4c88cfcd36e5a706558a8d7e0e4773643
+Patch4:        libpng-1.6-CVE-2025-64720.patch
+# from upstream, for <1.6.51, RHEL-131435
+# https://github.com/pnggroup/libpng/commit/16b5e3823918840aae65c0a6da57c78a5a496a4d
+Patch5:        libpng-1.6-CVE-2025-65018_p1of2.patch
+# https://github.com/pnggroup/libpng/commit/218612ddd6b17944e21eda56caf8b4bf7779d1ea
+Patch6:        libpng-1.6-CVE-2025-65018_p2of2.patch
+# from upstream, for <1.6.52, RHEL-133212
+# https://github.com/pnggroup/libpng/commit/788a624d7387a758ffd5c7ab010f1870dea753a1
+Patch7:        libpng-1.6-CVE-2025-66293_p1of2.patch
+# https://github.com/pnggroup/libpng/commit/a05a48b756de63e3234ea6b3b938b8f5f862484a
+Patch8:        libpng-1.6-CVE-2025-66293_p2of2.patch
 
 BuildRequires: zlib-devel
 BuildRequires: autoconf automake libtool
@@ -67,10 +79,15 @@ The libpng-tools package contains tools used by the authors of libpng.
 # Provide pngusr.dfa for build.
 cp -p %{SOURCE1} .
 
-%patch0 -p1
-%patch1 -p1 -b .arm
-%patch2 -p1 -b .CVE-2018-13785
-%patch3 -p1 -b .coverity
+%patch -P 0 -p1
+%patch -P 1 -p1 -b .arm
+%patch -P 2 -p1 -b .CVE-2018-13785
+%patch -P 3 -p1 -b .coverity
+%patch -P 4 -p1 -b .CVE-2025-64720
+%patch -P 5 -p1 -b .CVE-2025-65018_p1of2
+%patch -P 6 -p1 -b .CVE-2025-65018_p2of2
+%patch -P 7 -p1 -b .CVE-2025-66293_p1of2
+%patch -P 8 -p1 -b .CVE-2025-66293_p2of2
 
 %build
 autoreconf -vif
@@ -112,6 +129,20 @@ make check
 %{_bindir}/pngfix
 
 %changelog
+* Tue Dec 16 2025 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.34-9
+- CVE-2025-64720: buffer overflow (RHEL-131452)
+- CVE-2025-65018: heap buffer overflow (RHEL-131465)
+- CVE-2025-66293: out-of-bounds read in png_image_read_composite (RHEL-133226)
+
+* Thu Nov 28 2019 Nikola Forró <nforro@redhat.com> - 2:1.6.34-8
+- Remove redundant fix for CVE-2017-12652
+
+* Tue Nov 26 2019 Nikola Forró <nforro@redhat.com> - 2:1.6.34-7
+- Add upstream test suite and enable it in gating
+
+* Fri Nov 22 2019 Nikola Forró <nforro@redhat.com> - 2:1.6.34-6
+- Fix CVE-2017-12652 (#1744871)
+
 * Mon Oct 15 2018 Nikola Forró <nforro@redhat.com> - 2:1.6.34-5
 - Fix important Covscan defects (#1602588)
 
