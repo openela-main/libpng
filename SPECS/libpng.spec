@@ -4,7 +4,7 @@ Summary:       A library of functions for manipulating PNG image format files
 Name:          libpng
 Epoch:         2
 Version:       1.6.40
-Release:       8%{?dist}
+Release:       8%{?dist}.1
 License:       zlib
 URL:           http://www.libpng.org/pub/png/
 
@@ -17,6 +17,19 @@ Patch0:        libpng-multilib.patch
 Patch1:        libpng-1.6.40-nomore_neon_asm.patch
 # fix static analysis findings, RHEL-44993
 Patch2:        libpng-1.6.40-fix_sast.patch
+# from upstream, for <1.6.51, RHEL-131422
+# https://github.com/pnggroup/libpng/commit/08da33b4c88cfcd36e5a706558a8d7e0e4773643
+Patch3:        libpng-1.6-CVE-2025-64720.patch
+# from upstream, for <1.6.51, RHEL-131435
+# https://github.com/pnggroup/libpng/commit/16b5e3823918840aae65c0a6da57c78a5a496a4d
+Patch4:        libpng-1.6-CVE-2025-65018_p1of2.patch
+# https://github.com/pnggroup/libpng/commit/218612ddd6b17944e21eda56caf8b4bf7779d1ea
+Patch5:        libpng-1.6-CVE-2025-65018_p2of2.patch
+# from upstream, for <1.6.52, RHEL-133212
+# https://github.com/pnggroup/libpng/commit/788a624d7387a758ffd5c7ab010f1870dea753a1
+Patch6:        libpng-1.6-CVE-2025-66293_p1of2.patch
+# https://github.com/pnggroup/libpng/commit/a05a48b756de63e3234ea6b3b938b8f5f862484a
+Patch7:        libpng-1.6-CVE-2025-66293_p2of2.patch
 
 BuildRequires: gcc
 BuildRequires: zlib-devel
@@ -70,6 +83,11 @@ cp -p %{SOURCE1} .
 %patch -P 0 -p1
 %patch -P 1 -p1 -b .nomore_neon_asm
 %patch -P 2 -p1 -b .fix_sast
+%patch -P 3 -p1 -b .CVE-2025-64720
+%patch -P 4 -p1 -b .CVE-2025-65018_p1of2
+%patch -P 5 -p1 -b .CVE-2025-65018_p2of2
+%patch -P 6 -p1 -b .CVE-2025-66293_p1of2
+%patch -P 7 -p1 -b .CVE-2025-66293_p2of2
 
 %build
 autoreconf -vif
@@ -110,6 +128,11 @@ make check
 %{_bindir}/pngfix
 
 %changelog
+* Mon Dec 15 2025 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.40-8.1
+- CVE-2025-64720: buffer overflow (RHEL-131422)
+- CVE-2025-65018: heap buffer overflow (RHEL-131435)
+- CVE-2025-66293: out-of-bounds read in png_image_read_composite (RHEL-133212)
+
 * Tue Oct 29 2024 Troy Dawson <tdawson@redhat.com> - 2:1.6.40-8
 - Bump release for October 2024 mass rebuild:
   Resolves: RHEL-64018
