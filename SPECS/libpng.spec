@@ -4,7 +4,7 @@ Summary:       A library of functions for manipulating PNG image format files
 Name:          libpng
 Epoch:         2
 Version:       1.6.37
-Release:       12%{?dist}
+Release:       12%{?dist}.1
 License:       zlib
 URL:           http://www.libpng.org/pub/png/
 
@@ -12,6 +12,19 @@ Source0:       https://github.com/glennrp/%{name}/archive/v%{version}/%{name}-%{
 Source1:       pngusr.dfa
 Patch0:        libpng-multilib.patch
 Patch1:        libpng-fix-arm-neon.patch
+# from upstream, for <1.6.51, RHEL-131580
+# https://github.com/pnggroup/libpng/commit/08da33b4c88cfcd36e5a706558a8d7e0e4773643
+Patch2:        libpng-1.6-CVE-2025-64720.patch
+# from upstream, for <1.6.51, RHEL-131593
+# https://github.com/pnggroup/libpng/commit/16b5e3823918840aae65c0a6da57c78a5a496a4d
+Patch3:        libpng-1.6-CVE-2025-65018_p1of2.patch
+# https://github.com/pnggroup/libpng/commit/218612ddd6b17944e21eda56caf8b4bf7779d1ea
+Patch4:        libpng-1.6-CVE-2025-65018_p2of2.patch
+# from upstream, for <1.6.52, RHEL-133287
+# https://github.com/pnggroup/libpng/commit/788a624d7387a758ffd5c7ab010f1870dea753a1
+Patch5:        libpng-1.6-CVE-2025-66293_p1of2.patch
+# https://github.com/pnggroup/libpng/commit/a05a48b756de63e3234ea6b3b938b8f5f862484a
+Patch6:        libpng-1.6-CVE-2025-66293_p2of2.patch
 
 BuildRequires: gcc
 BuildRequires: zlib-devel
@@ -62,8 +75,13 @@ The libpng-tools package contains tools used by the authors of libpng.
 # Provide pngusr.dfa for build.
 cp -p %{SOURCE1} .
 
-%patch0 -p1
-%patch1 -p1 -b .arm
+%patch -P 0 -p1
+%patch -P 1 -p1 -b .arm
+%patch -P 2 -p1 -b .CVE-2025-64720
+%patch -P 3 -p1 -b .CVE-2025-65018_p1of2
+%patch -P 4 -p1 -b .CVE-2025-65018_p2of2
+%patch -P 5 -p1 -b .CVE-2025-66293_p1of2
+%patch -P 6 -p1 -b .CVE-2025-66293_p2of2
 
 %build
 autoreconf -vif
@@ -104,6 +122,11 @@ make check
 %{_bindir}/pngfix
 
 %changelog
+* Mon Dec 15 2025 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-12.1
+- CVE-2025-64720: buffer overflow (RHEL-131580)
+- CVE-2025-65018: heap buffer overflow (RHEL-131593)
+- CVE-2025-66293: out-of-bounds read in png_image_read_composite (RHEL-133287)
+
 * Mon Aug 09 2021 Mohan Boddu <mboddu@redhat.com> - 2:1.6.37-12
 - Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
   Related: rhbz#1991688
