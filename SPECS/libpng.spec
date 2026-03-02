@@ -4,7 +4,7 @@ Summary:       A library of functions for manipulating PNG image format files
 Name:          libpng
 Epoch:         2
 Version:       1.6.40
-Release:       8%{?dist}.1
+Release:       8%{?dist}.2
 License:       zlib
 URL:           http://www.libpng.org/pub/png/
 
@@ -30,6 +30,15 @@ Patch5:        libpng-1.6-CVE-2025-65018_p2of2.patch
 Patch6:        libpng-1.6-CVE-2025-66293_p1of2.patch
 # https://github.com/pnggroup/libpng/commit/a05a48b756de63e3234ea6b3b938b8f5f862484a
 Patch7:        libpng-1.6-CVE-2025-66293_p2of2.patch
+# from upstream, for <1.6.54, RHEL-148818
+# https://github.com/pnggroup/libpng/commit/e4f7ad4ea2
+Patch8:        libpng-1.6-cve-2026-22695.patch
+# from upstream, for <1.6.54, RHEL-146645
+# https://github.com/pnggroup/libpng/commit/cf155de014fc6c5cb199dd681dd5c8fb70429072
+Patch9:        libpng-1.6-cve-2026-22801.patch
+# from upstream, for <1.6.55, RHEL-148325
+# https://github.com/pnggroup/libpng/commit/01d03b8453eb30ade759cd45c707e5a1c7277d88
+Patch10:       libpng-1.6-cve-2026-25646.patch
 
 BuildRequires: gcc
 BuildRequires: zlib-devel
@@ -88,6 +97,9 @@ cp -p %{SOURCE1} .
 %patch -P 5 -p1 -b .CVE-2025-65018_p2of2
 %patch -P 6 -p1 -b .CVE-2025-66293_p1of2
 %patch -P 7 -p1 -b .CVE-2025-66293_p2of2
+%patch -P 8 -p1 -b .cve-2026-22695
+%patch -P 9 -p1 -b .cve-2026-22801
+%patch -P 10 -p1 -b .cve-2026-25646
 
 %build
 autoreconf -vif
@@ -128,6 +140,11 @@ make check
 %{_bindir}/pngfix
 
 %changelog
+* Sat Feb 21 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.40-8.2
+- fix CVE-2026-25646: heap buffer overflow in png_set_quantize (RHEL-148323)
+- fix CVE-2026-22695: heap buffer over-read in png_image_finish_read (RHEL-148818)
+- fix CVE-2026-22801: heap buffer over-read in png_image_write_*bit (RHEL-146645)
+
 * Mon Dec 15 2025 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.40-8.1
 - CVE-2025-64720: buffer overflow (RHEL-131422)
 - CVE-2025-65018: heap buffer overflow (RHEL-131435)
