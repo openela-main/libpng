@@ -4,7 +4,7 @@ Summary:       A library of functions for manipulating PNG image format files
 Name:          libpng
 Epoch:         2
 Version:       1.6.37
-Release:       15%{?dist}
+Release:       15%{?dist}.2
 License:       zlib
 URL:           http://www.libpng.org/pub/png/
 
@@ -34,6 +34,21 @@ Patch8:        libpng-1.6-cve-2026-22801.patch
 # from upstream, for <1.6.55, RHEL-148328
 # https://github.com/pnggroup/libpng/commit/01d03b8453eb30ade759cd45c707e5a1c7277d88
 Patch9:        libpng-1.6-cve-2026-25646.patch
+# from upstream, for <1.6.56, RHEL-161299
+# https://github.com/pnggroup/libpng/commit/aba9f18eba870d14fb52c5ba5d73451349e339c3
+Patch10:       libpng-1.6-CVE-2026-33636.patch
+# from upstream, for <1.6.56 (fix), for <1.6.58 (regression fix), RHEL-161448
+# https://github.com/pnggroup/libpng/commit/23019269764e35ed8458e517f1897bd3c54820eb
+Patch12:       libpng-1.6-CVE-2026-33416_p1of5.patch
+# https://github.com/pnggroup/libpng/commit/a3a21443ed12bfa1ef46fa0d4fb2b74a0fa34a25
+Patch13:       libpng-1.6-CVE-2026-33416_p2of5.patch
+# https://github.com/pnggroup/libpng/commit/7ea9eea884a2328cc7fdcb3c0c00246a50d90667
+Patch14:       libpng-1.6-CVE-2026-33416_p3of5.patch
+# https://github.com/pnggroup/libpng/commit/c1b0318b393c90679e6fa5bc1d329fd5d5012ec1
+Patch15:       libpng-1.6-CVE-2026-33416_p4of5.patch
+# regression fix for 7ea9eea8 (part 3)
+# https://github.com/pnggroup/libpng/commit/d4c4e49eb5c8981075ec2cd946428758c0cda6ac
+Patch16:       libpng-1.6-CVE-2026-33416_p5of5.patch
 
 BuildRequires: gcc
 BuildRequires: zlib-devel
@@ -94,6 +109,12 @@ cp -p %{SOURCE1} .
 %patch -P 7 -p1 -b .cve-2026-22695
 %patch -P 8 -p1 -b .cve-2026-22801
 %patch -P 9 -p1 -b .cve-2026-25646
+%patch -P 10 -p1 -b .CVE-2026-33636
+%patch -P 12 -p1 -b .CVE-2026-33416_p1of5
+%patch -P 13 -p1 -b .CVE-2026-33416_p2of5
+%patch -P 14 -p1 -b .CVE-2026-33416_p3of5
+%patch -P 15 -p1 -b .CVE-2026-33416_p4of5
+%patch -P 16 -p1 -b .CVE-2026-33416_p5of5
 
 %build
 autoreconf -vif
@@ -134,6 +155,12 @@ make check
 %{_bindir}/pngfix
 
 %changelog
+* Tue May 26 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-15.2
+- fix CVE-2026-33416: use-after-free via pointer aliasing in png_set_tRNS and png_set_PLTE (RHEL-161448)
+
+* Mon Apr 27 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-15.1
+- fix CVE-2026-33636: out-of-bounds R/W in the palette expansion on ARM Neon (RHEL-161299)
+
 * Tue Mar 03 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-15
 - fix CVE-2026-25646: heap buffer overflow in png_set_quantize (RHEL-148411)
 
