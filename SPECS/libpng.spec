@@ -4,7 +4,7 @@ Summary:       A library of functions for manipulating PNG image format files
 Name:          libpng
 Epoch:         2
 Version:       1.6.37
-Release:       15%{?dist}.2
+Release:       17%{?dist}
 License:       zlib
 URL:           http://www.libpng.org/pub/png/
 
@@ -34,10 +34,10 @@ Patch8:        libpng-1.6-cve-2026-22801.patch
 # from upstream, for <1.6.55, RHEL-148328
 # https://github.com/pnggroup/libpng/commit/01d03b8453eb30ade759cd45c707e5a1c7277d88
 Patch9:        libpng-1.6-cve-2026-25646.patch
-# from upstream, for <1.6.56, RHEL-161299
+# from upstream, for <1.6.56, RHEL-161307
 # https://github.com/pnggroup/libpng/commit/aba9f18eba870d14fb52c5ba5d73451349e339c3
 Patch10:       libpng-1.6-CVE-2026-33636.patch
-# from upstream, for <1.6.56 (fix), for <1.6.58 (regression fix), RHEL-161448
+# from upstream, for <1.6.56 (fix), for <1.6.58 (regression fix), RHEL-161456
 # https://github.com/pnggroup/libpng/commit/23019269764e35ed8458e517f1897bd3c54820eb
 Patch12:       libpng-1.6-CVE-2026-33416_p1of5.patch
 # https://github.com/pnggroup/libpng/commit/a3a21443ed12bfa1ef46fa0d4fb2b74a0fa34a25
@@ -155,11 +155,11 @@ make check
 %{_bindir}/pngfix
 
 %changelog
-* Tue May 26 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-15.2
-- fix CVE-2026-33416: use-after-free via pointer aliasing in png_set_tRNS and png_set_PLTE (RHEL-161448)
+* Tue Jun 02 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-17
+- fix CVE-2026-33416: use-after-free via pointer aliasing in png_set_tRNS and png_set_PLTE (RHEL-161456)
 
-* Mon Apr 27 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-15.1
-- fix CVE-2026-33636: out-of-bounds R/W in the palette expansion on ARM Neon (RHEL-161299)
+* Mon Apr 27 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-16
+- fix CVE-2026-33636: out-of-bounds R/W in the palette expansion on ARM Neon (RHEL-161307)
 
 * Tue Mar 03 2026 Michal Hlavinka <mhlavink@redhat.com> - 2:1.6.37-15
 - fix CVE-2026-25646: heap buffer overflow in png_set_quantize (RHEL-148411)
